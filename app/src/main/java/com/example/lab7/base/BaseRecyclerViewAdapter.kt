@@ -6,9 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 
 abstract class BaseRecyclerViewAdapter<T> : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var list: ArrayList<T>? = ArrayList<T>()
-/*
+
     protected var itemClickListener: OnItemClickListener? = null
-*/
+
 
     fun addItems(items: ArrayList<T>) {
         this.list?.addAll(items)
@@ -24,9 +24,9 @@ abstract class BaseRecyclerViewAdapter<T> : RecyclerView.Adapter<RecyclerView.Vi
         return this.list?.get(position)
     }
 
-    /*  fun setOnItemClickListener(onItemClickListener: OnItemClickListener) {
+     fun setOnItemClickListener(onItemClickListener: OnItemClickListener) {
         this.itemClickListener = onItemClickListener
-    }*/
+    }
 
     override fun getItemCount(): Int = list!!.size
 

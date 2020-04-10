@@ -4,6 +4,7 @@
     android:layout_marginRight="15dp"
     android:layout_marginLeft="15dp"
     android:layout_marginTop="15dp"
+    android:background="@drawable/rounded_white_button_with_stroke"
     android:layout_height="150dp">
 
     <ImageView

@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.lab7.model.data.JobsData
 
-@Database(entities = [JobsData::class], version = 1, exportSchema = false)
+@Database(entities = [JobsData::class], version = 3, exportSchema = false)
 abstract class JobsDatabase : RoomDatabase() {
     abstract fun jobsDao(): JobsDao
 

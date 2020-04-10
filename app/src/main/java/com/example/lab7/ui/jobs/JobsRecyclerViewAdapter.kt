@@ -49,16 +49,17 @@ class JobsRecyclerViewAdapter : BaseRecyclerViewAdapter<JobsData>() {
                 jobTitle.text = jobsData.jobTitle
                 jobType.text = jobsData.jobType
                 jobCreatedAt.text = jobsData.jobCreatedAt
-
-                if (!jobsData.savedJob!!) {
-                    savedJob.setBackgroundResource(R.drawable.not_pressed_heart)
-                }  else {
-                    savedJob.setBackgroundResource(R.drawable.heart_box)
-                }
             }
 
             override fun onClick(v: View?) {
-                TODO("Not yet implemented")
+                if (v != null) {
+                    if (v.id == savedJob.id) {
+                        itemClickListener?.onHeartClick(adapterPosition, savedJob)
+                    }
+                    else{
+                        itemClickListener?.onItemClick(adapterPosition, v)
+                    }
+                }
             }
 
         }

@@ -9,41 +9,50 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Call
 import retrofit2.Response
 import kotlin.coroutines.CoroutineContext
+
 
 class JobsRepository(application: Application) : CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
 
-
     private var jobsDao: JobsDao?
-    private var retrofit: RetrofitService? = null
+    private val retrofit = RetrofitService
 
     init {
         val db = JobsDatabase.getDatabase(application)
         jobsDao = db?.jobsDao()
-
     }
 
-    fun getAllJobs() = jobsDao?.getAllJobs()
+    fun getAllJobsList() = jobsDao?.getAllJobs()
 
-     fun addJob(jobsData: List<JobsData>?) {
+    fun getSavedJobsList(check: Boolean = true) = jobsDao?.getSavedJobs(check)
+
+    fun addJobsList(jobsData: List<JobsData>) {
+        launch { addTaskBG(jobsData) }
+    }
+
+    fun updateSavedJobs(check: Boolean, jobId: String){
         launch {
-            if (jobsData != null) {
-                addTaskBG(jobsData)
-            }
+            updateSavedJobs(check, jobId)
+        }
+    }
+    suspend fun updateJobsBG(check: Boolean, jobId: String) {
+        withContext(Dispatchers.IO) {
+            jobsDao?.updateSavedJobs(check, jobId)
         }
     }
 
-    private suspend fun addTaskBG(jobsData: List<JobsData>?) {
+    private suspend fun addTaskBG(jobsData: List<JobsData>) {
         withContext(Dispatchers.IO) {
             jobsDao?.insert(jobsData)
         }
     }
-      suspend fun getJobsListCoroutine(page: Int): Response<List<JobsData>>? {
-        return retrofit?.getJobsApi()?.getJobsListCoroutine(page = page)
+
+    suspend fun getAllJobs(page: Int): Response<List<JobsData>> {
+        return retrofit.getJobsApi().getJobsListCoroutine(page = page)
     }
+
 }
