@@ -82,6 +82,28 @@ class FragmentJobs : Fragment() {
             }
 
             override fun onHeartClick(position: Int, savedJob: CheckBox) {
+                jobsFragmentViewModel.getSavedJobs()
+                val jobsData: JobsData? = jobsRecyclerViewAdapter.getItem(position)
+                jobsFragmentViewModel.liveData.observe(viewLifecycleOwner, Observer {result ->
+                    when (result) {
+                        is FragmentJobsViewModel.State.ShowLoading -> {
+                            srlJobs.isRefreshing = false
+                        }
+                        is FragmentJobsViewModel.State.HideLoading -> {
+                            srlJobs.isRefreshing = false
+                        }
+                        is FragmentJobsViewModel.State.SavedJob ->  {
+                           if (!result.result.contains(jobsData)) {
+                                savedJob.setBackgroundResource(R.drawable.heart_box)
+                               jobsData?.jobId?.let { jobsFragmentViewModel.setSavedJobs(true, it) }
+                           }
+                            else {
+                               savedJob.setBackgroundResource(R.drawable.not_pressed_heart)
+                               jobsData?.jobId?.let { jobsFragmentViewModel.setSavedJobs(false, it) }
+                           }
+                        }
+                    }
+                })
             }
         })
     }

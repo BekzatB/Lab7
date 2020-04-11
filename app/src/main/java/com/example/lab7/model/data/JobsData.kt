@@ -1,5 +1,6 @@
 package com.example.lab7.model.data
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
@@ -18,5 +19,5 @@ data class JobsData(
     @SerializedName("description") val jobDescription: String? = null,
     @SerializedName("how_to_apply") val jobHowToApply: String? = null,
     @SerializedName("company_logo") val jobCompanyLogo: String? = null,
-    var savedJob: Boolean = false
+    val savedJob: Boolean? = false
 )
