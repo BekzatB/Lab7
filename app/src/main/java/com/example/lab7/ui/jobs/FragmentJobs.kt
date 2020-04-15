@@ -9,8 +9,6 @@ import android.widget.CheckBox
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,17 +24,11 @@ class FragmentJobs : Fragment() {
     private lateinit var jobsRecyclerViewAdapter: JobsRecyclerViewAdapter
     private lateinit var jobsRecyclerView: RecyclerView
     private lateinit var srlJobs: SwipeRefreshLayout
-    private  val  jobsFragmentViewModel: FragmentJobsViewModel by viewModels()
-    private val linearLayoutManager = LinearLayoutManager(
-        activity,
-        LinearLayoutManager.VERTICAL,
-        false
-    )
+    private val jobsFragmentViewModel: FragmentJobsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         onCreateComponent()
-
     }
 
     private fun onCreateComponent() {
@@ -64,43 +56,53 @@ class FragmentJobs : Fragment() {
         srlJobs = view.findViewById(R.id.srlJobs)
         navController = Navigation.findNavController(this)
 
-        jobsRecyclerView.layoutManager = linearLayoutManager
+        jobsRecyclerView.layoutManager = LinearLayoutManager(
+            activity,
+            LinearLayoutManager.VERTICAL,
+            false
+        )
 
         srlJobs.setOnRefreshListener {
             jobsRecyclerViewAdapter.clear()
             jobsFragmentViewModel.getJobsList()
         }
-}
+    }
 
     private fun setAdapter() {
         jobsRecyclerView.adapter = jobsRecyclerViewAdapter
 
-        jobsRecyclerViewAdapter.setOnItemClickListener(onItemClickListener = object  :
-        OnItemClickListener {
+        jobsRecyclerViewAdapter.setOnItemClickListener(onItemClickListener = object :
+            OnItemClickListener {
             override fun onItemClick(position: Int, view: View) {
-                navController.navigate(R.id.action_fragmentJobs_to_fragmentsDetails)
+                val bundle = Bundle()
+                Log.d("123", jobsRecyclerViewAdapter.getItem(position)?.jobId.toString())
+                bundle.putString(
+                    "job_id",
+                    jobsRecyclerViewAdapter.getItem(position)?.jobId.toString()
+                )
+                navController.navigate(
+                    R.id.action_fragmentJobs_to_fragmentsDetails,
+                    bundle
+                )
             }
 
-            override fun onHeartClick(position: Int, savedJob: CheckBox) {
+            override fun onHeartClick(position: Int, view: View) {
+                val savedJob = view.findViewById<CheckBox>(R.id.savedJob)
                 jobsFragmentViewModel.getSavedJobs()
                 val jobsData: JobsData? = jobsRecyclerViewAdapter.getItem(position)
-                jobsFragmentViewModel.liveData.observe(viewLifecycleOwner, Observer {result ->
+                Log.d("123", jobsData?.savedJob.toString())
+                jobsFragmentViewModel.liveData.observe(viewLifecycleOwner, Observer { result ->
                     when (result) {
-                        is FragmentJobsViewModel.State.ShowLoading -> {
-                            srlJobs.isRefreshing = false
-                        }
-                        is FragmentJobsViewModel.State.HideLoading -> {
-                            srlJobs.isRefreshing = false
-                        }
-                        is FragmentJobsViewModel.State.SavedJob ->  {
-                           if (!result.result.contains(jobsData)) {
-                                savedJob.setBackgroundResource(R.drawable.heart_box)
-                               jobsData?.jobId?.let { jobsFragmentViewModel.setSavedJobs(true, it) }
-                           }
-                            else {
-                               savedJob.setBackgroundResource(R.drawable.not_pressed_heart)
-                               jobsData?.jobId?.let { jobsFragmentViewModel.setSavedJobs(false, it) }
-                           }
+                        is FragmentJobsViewModel.State.SavedJob -> {
+                            result.result.forEach {
+                                if (it == jobsData) {
+                                    savedJob.setBackgroundResource(R.drawable.not_pressed_heart)
+                                    jobsFragmentViewModel.setSavedJobs("false", it.jobId)
+                                } else {
+                                    savedJob.setBackgroundResource(R.drawable.heart_box)
+                                    jobsFragmentViewModel.setSavedJobs("true", it.jobId)
+                                }
+                            }
                         }
                     }
                 })
@@ -109,10 +111,6 @@ class FragmentJobs : Fragment() {
     }
 
     private fun setData() {
-       observe()
-    }
-
-    private fun observe() {
         jobsRecyclerViewAdapter.clear()
         jobsFragmentViewModel.getJobsList()
 

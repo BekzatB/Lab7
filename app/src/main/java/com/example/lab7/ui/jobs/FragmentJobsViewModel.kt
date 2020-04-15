@@ -25,7 +25,7 @@ open class FragmentJobsViewModel(application: Application) : AndroidViewModel(ap
 
     private var jobsRepository: JobsRepository = JobsRepository(application)
 
-     fun getJobsList(page: Int = 1) {
+    fun getJobsList(page: Int = 1) {
 
         uiScope.launch {
             _liveData.value = State.ShowLoading
@@ -35,7 +35,12 @@ open class FragmentJobsViewModel(application: Application) : AndroidViewModel(ap
                     if (response.isSuccessful) {
                         val result = response.body()
                         if (!result.isNullOrEmpty()) {
-                            jobsRepository.addJobsList(result)
+                            jobsRepository.addJobsList(result as ArrayList<JobsData>)
+                           result.forEach{
+                               if (it.savedJob == null) {
+                                    jobsRepository.makeFalse("false", it.jobId)
+                               }
+                           }
                         }
                         result
                     } else {
@@ -52,7 +57,6 @@ open class FragmentJobsViewModel(application: Application) : AndroidViewModel(ap
 
     fun getSavedJobs() {
         uiScope.launch {
-            _liveData.value = State.ShowLoading
             withContext(Dispatchers.Default) {
              val response = jobsRepository.getSavedJobsList()
                 if (response != null) {
@@ -61,10 +65,9 @@ open class FragmentJobsViewModel(application: Application) : AndroidViewModel(ap
                     ))
                 }
             }
-            _liveData.value = State.HideLoading
         }
     }
-    fun setSavedJobs(check: Boolean, jobId: String) {
+    fun setSavedJobs(check: String, jobId: String) {
         uiScope.launch {
             withContext(Dispatchers.IO) {
                 jobsRepository.updateSavedJobs(check, jobId)
@@ -77,6 +80,7 @@ open class FragmentJobsViewModel(application: Application) : AndroidViewModel(ap
         object HideLoading : State()
         data class SavedJob(val result: ArrayList<JobsData>): State()
         data class Result(val jobsList: ArrayList<JobsData>) : State()
+        data class JobById(val jobById: JobsData) : State()
     }
 
     override fun onCleared() {

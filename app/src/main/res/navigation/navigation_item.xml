@@ -14,4 +14,12 @@
         android:id="@+id/fragmentsDetails"
         android:name="com.example.lab7.ui.details.FragmentsDetails"
         android:label="FragmentsDetails" />
+    <fragment
+        android:id="@+id/fragmentSavedJobs"
+        android:name="com.example.lab7.ui.saved_jobs.FragmentSavedJobs"
+        android:label="FragmentSavedJobs" >
+        <action
+            android:id="@+id/action_fragmentSavedJobs_to_fragmentsDetails"
+            app:destination="@id/fragmentsDetails" />
+    </fragment>
 </navigation>

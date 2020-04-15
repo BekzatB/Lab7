@@ -28,18 +28,30 @@ class JobsRepository(application: Application) : CoroutineScope {
 
     fun getAllJobsList() = jobsDao?.getAllJobs()
 
-    fun getSavedJobsList(check: Boolean = true) = jobsDao?.getSavedJobs(check)
+    fun getSavedJobsList(check: String = "true") = jobsDao?.getSavedJobs(check)
 
     fun addJobsList(jobsData: List<JobsData>) {
         launch { addTaskBG(jobsData) }
     }
 
-    fun updateSavedJobs(check: Boolean, jobId: String){
+    fun makeFalse(check: String = "false", jobId: String) {
         launch {
-            updateSavedJobs(check, jobId)
+            makeFalseBG(check, jobId)
         }
     }
-    suspend fun updateJobsBG(check: Boolean, jobId: String) {
+
+    suspend fun makeFalseBG(check: String, jobId: String) {
+        withContext(Dispatchers.IO) {
+            jobsDao?.makeFalse(check, jobId)
+        }
+    }
+
+    fun updateSavedJobs(check: String, jobId: String){
+        launch {
+            updateJobsBG(check, jobId)
+        }
+    }
+    suspend fun updateJobsBG(check: String, jobId: String) {
         withContext(Dispatchers.IO) {
             jobsDao?.updateSavedJobs(check, jobId)
         }
@@ -53,6 +65,10 @@ class JobsRepository(application: Application) : CoroutineScope {
 
     suspend fun getAllJobs(page: Int): Response<List<JobsData>> {
         return retrofit.getJobsApi().getJobsListCoroutine(page = page)
+    }
+
+    suspend fun getJobById(jobId: String): Response<JobsData> {
+        return retrofit.getJobsApi().getJobById(jobId)
     }
 
 }

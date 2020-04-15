@@ -22,11 +22,17 @@ class MainActivity : AppCompatActivity() {
         val appConfiguration = AppBarConfiguration(
             setOf(
                 R.id.jobsFragment,
-                R.id.savedItemFragment,
-                R.id.moreFragment
+                R.id.fragmentSavedJobs,
+                R.id.moreFragment,
+                R.id.fragmentsDetails
             )
         )
         setupActionBarWithNavController(navController, appConfiguration)
         navView.setupWithNavController(navController)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        return
     }
 }

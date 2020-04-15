@@ -10,6 +10,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
@@ -51,9 +52,9 @@ interface JobsApi {
    suspend fun getJobsListCoroutine(
         @Query("page") page: Int
     ): Response<List<JobsData>>
-/*
-    @GET(" /positions/ID.json")
-    fun getJobById(
 
-    )*/
+    @GET(" /positions/{ID}.json?")
+    suspend fun getJobById(
+        @Path("ID") jobId: String
+    ): Response<JobsData>
 }
