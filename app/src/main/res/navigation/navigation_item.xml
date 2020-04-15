@@ -22,4 +22,8 @@
             android:id="@+id/action_fragmentSavedJobs_to_fragmentsDetails"
             app:destination="@id/fragmentsDetails" />
     </fragment>
+    <fragment
+        android:id="@+id/fragmentMore2"
+        android:name="com.example.lab7.ui.more.FragmentMore"
+        android:label="FragmentMore" />
 </navigation>

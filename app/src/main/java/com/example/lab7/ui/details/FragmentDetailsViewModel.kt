@@ -45,10 +45,6 @@ class FragmentDetailsViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    fun setSavedJobs(jobsData: JobsData) {
-
-    }
-
     sealed class State {
         object ShowLoading : State()
         object HideLoading : State()

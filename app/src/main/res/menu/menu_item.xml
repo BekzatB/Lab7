@@ -5,12 +5,12 @@
         android:icon="@drawable/icon_jobs"
         android:title="Jobs" />
     <item
-        android:id="@+id/savedItemFragment"
+        android:id="@+id/fragmentSavedJobs"
         android:icon="@drawable/iconfinder_heart_299063"
         android:title="Saved" />
 
     <item
-        android:id="@+id/moreFragment"
+        android:id="@+id/fragmentMore"
         android:icon="@drawable/icon_more"
         android:title="More" />
 

@@ -71,4 +71,16 @@ class JobsRepository(application: Application) : CoroutineScope {
         return retrofit.getJobsApi().getJobById(jobId)
     }
 
+    suspend fun searchJobByDescription(description: String): Response<List<JobsData>> {
+        return retrofit.getJobsApi().searchJobsByDescription(description)
+    }
+
+    suspend fun searchJobByLocation(location: String): Response<List<JobsData>> {
+        return retrofit.getJobsApi().searchJobsByLocation(location)
+    }
+
+    suspend fun searchJobs(description: String, location: String): Response<List<JobsData>> {
+        return retrofit.getJobsApi().searchJobs(description, location)
+    }
+
 }

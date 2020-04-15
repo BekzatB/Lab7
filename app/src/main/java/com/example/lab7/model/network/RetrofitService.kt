@@ -9,6 +9,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -49,7 +50,7 @@ object RetrofitService {
 
 interface JobsApi {
     @GET(" /positions.json?")
-   suspend fun getJobsListCoroutine(
+    suspend fun getJobsListCoroutine(
         @Query("page") page: Int
     ): Response<List<JobsData>>
 
@@ -57,4 +58,21 @@ interface JobsApi {
     suspend fun getJobById(
         @Path("ID") jobId: String
     ): Response<JobsData>
+
+    @GET("positions.json?")
+    suspend fun searchJobsByDescription(
+        @Query("description") description: String
+    ): Response<List<JobsData>>
+
+    @GET("positions.json?")
+    suspend fun searchJobsByLocation(
+        @Query("location") location: String
+    ): Response<List<JobsData>>
+
+    @GET("positions.json?")
+    suspend fun searchJobs(
+        @Query("description") description: String,
+        @Query("location") location: String
+    ): Response<List<JobsData>>
+
 }

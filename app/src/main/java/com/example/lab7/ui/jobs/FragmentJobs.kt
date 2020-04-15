@@ -5,7 +5,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.CheckBox
+import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -25,6 +27,12 @@ class FragmentJobs : Fragment() {
     private lateinit var jobsRecyclerView: RecyclerView
     private lateinit var srlJobs: SwipeRefreshLayout
     private val jobsFragmentViewModel: FragmentJobsViewModel by viewModels()
+    private lateinit var searchJobsCompany: EditText
+    private lateinit var searchJobsTitle: EditText
+    private lateinit var searchJobsLocation: EditText
+    private lateinit var searchJobsDescription: EditText
+    private lateinit var searchJobsButton: Button
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +63,11 @@ class FragmentJobs : Fragment() {
         jobsRecyclerView = view.findViewById(R.id.jobsRecyclerView)
         srlJobs = view.findViewById(R.id.srlJobs)
         navController = Navigation.findNavController(this)
+        searchJobsCompany = findViewById(R.id.searchJobsCompany)
+        searchJobsTitle = findViewById(R.id.searchJobsTitle)
+        searchJobsLocation = findViewById(R.id.searchJobsLocation)
+        searchJobsDescription = findViewById(R.id.searchJobsDescription)
+        searchJobsButton = findViewById(R.id.searchButton)
 
         jobsRecyclerView.layoutManager = LinearLayoutManager(
             activity,
@@ -65,6 +78,26 @@ class FragmentJobs : Fragment() {
         srlJobs.setOnRefreshListener {
             jobsRecyclerViewAdapter.clear()
             jobsFragmentViewModel.getJobsList()
+        }
+
+        searchJobsButton.setOnClickListener {
+            jobsRecyclerViewAdapter.clear()
+
+            if (!searchJobsLocation.text.isNullOrEmpty()
+                && !searchJobsDescription.text.isNullOrEmpty()) {
+                jobsFragmentViewModel.searchJobs(searchJobsDescription.text.toString(),
+                    searchJobsLocation.text.toString())
+            }
+
+            if (searchJobsLocation.text.isNullOrEmpty()
+                && !searchJobsDescription.text.isNullOrEmpty()) {
+                jobsFragmentViewModel.searchByDescription(searchJobsDescription.text.toString())
+            }
+
+            if (!searchJobsLocation.text.isNullOrEmpty() && searchJobsDescription.text.isNullOrEmpty()) {
+                jobsFragmentViewModel.searchByLocation(searchJobsLocation.text.toString())
+            }
+
         }
     }
 
@@ -124,6 +157,16 @@ class FragmentJobs : Fragment() {
                 }
                 is FragmentJobsViewModel.State.Result -> {
                     jobsRecyclerViewAdapter.addItems(result.jobsList)
+                }
+
+                is FragmentJobsViewModel.State.JobByBoth -> {
+                    jobsRecyclerViewAdapter.addItems(result.job)
+                }
+                is FragmentJobsViewModel.State.JobByLocation -> {
+                    jobsRecyclerViewAdapter.addItems(result.job)
+                }
+                is FragmentJobsViewModel.State.JobByDescription -> {
+                    jobsRecyclerViewAdapter.addItems(result.job)
                 }
             }
         })

@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
             setOf(
                 R.id.jobsFragment,
                 R.id.fragmentSavedJobs,
-                R.id.moreFragment,
+                R.id.fragmentMore,
                 R.id.fragmentsDetails
             )
         )

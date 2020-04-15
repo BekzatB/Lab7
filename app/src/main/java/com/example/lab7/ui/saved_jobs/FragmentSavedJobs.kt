@@ -19,8 +19,9 @@ class FragmentSavedJobs : Fragment() {
 
     private lateinit var savedJobRecyclerView: RecyclerView
     private lateinit var savedJobsAdapter: SavedJobsAdapter
-    private val fragmentSavedJobsViewModel: FragmentSavedJobsViewModel by viewModels()
     private lateinit var navController: NavController
+    private val fragmentSavedJobsViewModel: FragmentSavedJobsViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,19 +43,24 @@ class FragmentSavedJobs : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindView(view)
+        setAdapter()
         setData()
     }
 
     private fun bindView(view: View) = with(view) {
         savedJobRecyclerView = findViewById(R.id.savedJobRecyclerView)
-        navController = Navigation.findNavController(view)
+        navController = Navigation.findNavController(this)
+
         savedJobRecyclerView.layoutManager = LinearLayoutManager(
             activity,
             LinearLayoutManager.VERTICAL,
             false
         )
-        savedJobRecyclerView.adapter = savedJobsAdapter
 
+    }
+
+    private fun setAdapter() {
+        savedJobRecyclerView.adapter = savedJobsAdapter
         savedJobsAdapter.setOnItemClickListener(onItemClickListener = object :
             OnItemClickListener {
             override fun onItemClick(position: Int, view: View) {
